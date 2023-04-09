@@ -5,6 +5,8 @@
  */
 package compiladorl3;
 
+import java.io.FileReader;
+
 /**
  *
  * @author tarci

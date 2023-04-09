@@ -57,21 +57,16 @@ public class Lexico {
         return (c >= '0') && (c <= '9');
     }
     
-    private boolean isEspecial(char c) {
-    	return (c == '+') 
-    			|| (c == '-') 
-    			|| (c == '*') 
-    			|| (c == '/') 
-    			|| (c == '(')
-    			|| (c == ')')
-    			|| (c == '{')
-    			|| (c == '}')
-    			|| (c == ',')
-    			|| (c == ';');
+    private boolean isAritimetico(char c) {
+    	return (c == '+') || (c == '-') || (c == '*') || (c == '/') || (c == '(') || (c == ')') || (c == '{') || (c == '}') || (c == ',')|| (c == ';');
     }
     
     private boolean isOperadorAtribuicao(char c) {
     	return (c == '=');
+    }
+    
+    private boolean isOperadorRelacional(char c) {
+    	return (c == '>') || (c == '<');
     }
     
     //Método retorna próximo token válido ou retorna mensagem de erro.
@@ -97,26 +92,47 @@ public class Lexico {
                         lexema.append(c);
                         estado = 2;
                     }
-                    else if(c == ')' || 
-                            c == '(' ||
-                            c == '{' ||
-                            c == '}' ||
-                            c == ',' ||
-                            c == ';' ||
-                            c == '>'){
+                    else if(c == ')' || c == '(' || c == '{' || c == '}' || c == ',' || c == ';'){
                         lexema.append(c);
                         estado = 5;
                     } 
-                    else if (c == '+' ||
-                    		 c == '-' ||
-                    		 c == '*' ||
-                    		 c == '/') {
+                    else if (c == '+' || c == '-' || c == '*' || c == '/') {
                     	lexema.append(c);
                     	estado = 6;
                     } 
                     else if(c == '=') {
                     	lexema.append(c);
-                    	estado = 7;
+                    	c = this.nextChar();
+                    	if(c == '=') {
+                    		lexema.append(c);
+                    		estado = 8;
+                    	}
+                    	else {
+                    		this.back();
+                    		return new Token(lexema.toString(), Token.TIPO_OPERADOR_ATRIBUICAO);
+                    	}
+                    }
+                    else if(c == '>'){ // tem que testar se o proximo token é um '='
+                    	lexema.append(c); 
+                    	c = this.nextChar();
+                    	if(c == '=') {
+                    		lexema.append(c);
+                    		estado = 8;
+                    	} else {
+                    		this.back();
+                    		return new Token(lexema.toString(), Token.TIPO_OPERADOR_RELACIONAL);
+                    	}
+                    }
+                    else if(c == '<') {
+                    	lexema.append(c); 
+                    	c = this.nextChar();
+                    	if(c == '=') {
+                    		lexema.append(c);
+                    		estado = 8;
+                    	} else {
+                    		this.back();
+                    		return new Token(lexema.toString(), Token.TIPO_OPERADOR_RELACIONAL);
+                    	}
                     }
                     else if(c == '$') {
                         lexema.append(c);
@@ -181,7 +197,7 @@ public class Lexico {
                     }
                     break;
                 case 5:
-                	if (this.isEspecial(c)) {
+                	if (this.isAritimetico(c)) {
                 		lexema.append(c);
                 		estado = 5;
                 	}
@@ -191,13 +207,9 @@ public class Lexico {
                 	}
                 	break;
                 case 6:
-                	if (this.isEspecial(c)) {
-                		lexema.append(c);
-                		estado = 6;
-                	}
-                	else {
+                	if (this.isAritimetico(c)) {
                 		this.back();
-                        return new Token(lexema.toString(), Token.TIPO_CARACTER_ESPECIAL);
+                        return new Token(lexema.toString(), Token.TIPO_OPERADOR_ARITMETICO);
                 	}
                 	break;
                 	
@@ -209,6 +221,15 @@ public class Lexico {
                 	else {
                 		this.back();
                 		return new Token(lexema.toString(), Token.TIPO_OPERADOR_ATRIBUICAO);
+                	}
+                	break;
+                case 8:
+                	if(this.isOperadorRelacional(c)) {
+                		lexema.append(c);
+                		estado = 8;
+                	} else {
+                		this.back();
+                		return new Token(lexema.toString(), Token.TIPO_OPERADOR_RELACIONAL);
                 	}
                 	break;
                 case 99:

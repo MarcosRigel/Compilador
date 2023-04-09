@@ -16,9 +16,9 @@ public class CompiladorL3 {
      */
     public static void main(String[] args) {
     	
-	   Lexico lexico = new Lexico("C:"
-			   	+ "\\Users\\Marcos Rigel\\OneDrive\\Área de Trabalho"
-			   	+ "\\compilador_tarcisio\\CompiladorL3\\src\\compiladorl3\\codigo.txt");
+	   Lexico lexico = new Lexico("C:\\Users\\Marcos Rigel\\OneDrive"
+	   		+ "\\Área de Trabalho\\compilador\\CompiladorL3\\src"
+	   		+ "\\compiladorl3\\codigo.txt");
 	   Token t = null;	
 	   while((t = lexico.nextToken()) != null){
 	         System.out.println(t.toString());
