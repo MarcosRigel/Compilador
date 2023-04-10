@@ -134,6 +134,18 @@ public class Lexico {
                     		return new Token(lexema.toString(), Token.TIPO_OPERADOR_RELACIONAL);
                     	}
                     }
+                    else if(c == '\'') {
+                    	lexema.append(c);
+                    	c = this.nextChar();
+                    	if(this.isDigito(c) || this.isLetra(c)) {
+                    		lexema.append(c);
+                    		estado = 9;
+                    	}
+                    	else {
+                    		this.back();
+                    		throw new RuntimeException("Erro: char mal formado \"" + lexema.toString() + "\"");
+                    	}
+                    }
                     else if(c == '$') {
                         lexema.append(c);
                         estado = 99;
@@ -230,6 +242,16 @@ public class Lexico {
                 	} else {
                 		this.back();
                 		return new Token(lexema.toString(), Token.TIPO_OPERADOR_RELACIONAL);
+                	}
+                	break;
+                case 9: 
+                	if(c == '\'') {
+                		lexema.append(c);
+                		estado = 9;
+                	}
+                	else {
+                		this.back();
+                		return new Token(lexema.toString(), Token.TIPO_CHAR);
                 	}
                 	break;
                 case 99:
