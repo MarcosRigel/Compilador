@@ -152,6 +152,11 @@ public class Lexico {
                         estado = 99;
                         this.back();
                     }
+                    else if(c == '@') {
+                    	lexema.append(c);
+                    	c = this.nextChar();
+                    	System.err.println("Erro: token invalido " + lexema.toString());
+                    }
                     else{
                         lexema.append(c);
                         throw new RuntimeException("Erro: token inválido \"" + lexema.toString() + "\"");
