@@ -142,8 +142,9 @@ public class Lexico {
                     		estado = 9;
                     	}
                     	else {
-                    		this.back();
-                    		throw new RuntimeException("Erro: char mal formado \"" + lexema.toString() + "\"");
+                    		lexema.append(c);
+                    		c = this.nextChar();
+                    		System.err.println("Erro: char mal formado " + lexema.toString());
                     	}
                     }
                     else if(c == '$') {
@@ -248,6 +249,15 @@ public class Lexico {
                 	if(c == '\'') {
                 		lexema.append(c);
                 		estado = 9;
+                	}
+                	else if(c == '@') {
+                		lexema.append(c);
+                		c = this.nextChar();
+                		System.err.println("Erro: char mal formado " + lexema.toString());
+                	}
+                	else if(c != '\'')  {
+                		lexema.append(c);
+                		System.err.println("Erro: char mal formado " + lexema.toString());
                 	}
                 	else {
                 		this.back();
