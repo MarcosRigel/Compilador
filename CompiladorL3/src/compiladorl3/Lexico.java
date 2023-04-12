@@ -159,7 +159,8 @@ public class Lexico {
                     }
                     else{
                         lexema.append(c);
-                        throw new RuntimeException("Erro: token inválido \"" + lexema.toString() + "\"");
+                        c = this.nextChar();
+                        System.err.println("Erro: token inválido \"" + lexema.toString() + "\"");
                     }
                     break;
                 case 1:
