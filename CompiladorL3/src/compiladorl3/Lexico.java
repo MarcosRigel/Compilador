@@ -268,8 +268,8 @@ public class Lexico {
                 		System.err.println("Erro: char mal formado " + lexema.toString());
                 	}
 //                	else {
-//                		this.back();
 //                		
+//                		this.back()
 //                	}
                 	break;
                 case 99:
