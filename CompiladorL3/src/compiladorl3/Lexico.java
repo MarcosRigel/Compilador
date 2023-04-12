@@ -52,6 +52,10 @@ public class Lexico {
         return (c >= 'a') && (c <= 'z');
     }
     
+    private boolean isLetraMaiuscula(char c ) {
+    	return (c >= 'A') && (c <= 'Z');
+    }
+    
     //Identificar se char é dígito
     private boolean isDigito(char c){
         return (c >= '0') && (c <= '9');
@@ -140,6 +144,10 @@ public class Lexico {
                     	if(this.isDigito(c) || this.isLetra(c)) {
                     		lexema.append(c);
                     		estado = 9;
+                    	} 
+                    	else if(c == '\'') {
+                    		lexema.append(c);
+                    		estado = 10;
                     	}
                     	else {
                     		lexema.append(c);
@@ -267,10 +275,25 @@ public class Lexico {
                 		lexema.append(c);
                 		System.err.println("Erro: char mal formado " + lexema.toString());
                 	}
-//                	else {
-//                		
-//                		this.back()
-//                	}
+                	break;
+                case 10:
+                	if(isLetra(c) || isDigito(c) || isLetraMaiuscula(c) || c == '!' || c == ' ' || c == '?' || c == '@' || c == '#' || c == '$' || c == '+' || c == '-' || c == '/' || c == '`' || c == '*') {
+                		lexema.append(c);
+                	}
+                	else if(c == '\'') {
+                		c = this.nextChar();
+                		lexema.append(c);
+                		if(c == '\'') {
+                			lexema.append(c);
+                			return new Token(lexema.toString(), Token.TIPO_STRING); 
+                		}
+                		else {
+                			System.err.println("Erro: string mal formatada " + lexema.toString());
+                		}
+                	}
+                	else {
+                		System.err.println("Erro: string mal formatada " + lexema.toString());
+                	}
                 	break;
                 case 99:
                     return new Token(lexema.toString(), Token.TIPO_FIM_CODIGO); 
