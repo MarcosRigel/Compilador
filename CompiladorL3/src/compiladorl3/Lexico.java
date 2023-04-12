@@ -197,7 +197,9 @@ public class Lexico {
                         lexema.append(c);
                         estado = 4;
                     }else{
-                        throw new RuntimeException("Erro: número float inválido \"" + lexema.toString() + "\"");
+                        lexema.append(c);
+                        c = this.nextChar();
+                        System.err.println("Erro: numero float invalido " + lexema.toString());
                     }
                     break;
                 case 4:
