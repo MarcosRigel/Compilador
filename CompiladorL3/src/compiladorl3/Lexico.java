@@ -100,9 +100,9 @@ public class Lexico {
                         lexema.append(c);
                         estado = 5;
                     } 
-                    else if (c == '+' || c == '-' || c == '*' || c == '/') {
+                    else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%') {
                     	lexema.append(c);
-                    	estado = 6;
+                    	return new Token(lexema.toString(), Token.TIPO_OPERADOR_ARITMETICO);
                     } 
                     else if(c == '=') {
                     	lexema.append(c);
@@ -133,7 +133,12 @@ public class Lexico {
                     	if(c == '=') {
                     		lexema.append(c);
                     		estado = 8;
-                    	} else {
+                    	}
+                    	else if(c == '>') {
+                    		lexema.append(c);
+                    		estado = 8;
+                    	}
+                    	else {
                     		this.back();
                     		return new Token(lexema.toString(), Token.TIPO_OPERADOR_RELACIONAL);
                     	}
@@ -141,7 +146,7 @@ public class Lexico {
                     else if(c == '\'') {
                     	lexema.append(c);
                     	c = this.nextChar();
-                    	if(this.isDigito(c) || this.isLetra(c)) {
+                    	if(this.isDigito(c) || this.isLetra(c) || this.isLetraMaiuscula(c)) {
                     		lexema.append(c);
                     		estado = 9;
                     	} 
@@ -238,10 +243,8 @@ public class Lexico {
                 case 6:
                 	if (this.isAritimetico(c)) {
                 		this.back();
-                        return new Token(lexema.toString(), Token.TIPO_OPERADOR_ARITMETICO);
                 	}
                 	break;
-                	
                 case 7:
                 	if (this.isOperadorAtribuicao(c)) {
                 		lexema.append(c);
