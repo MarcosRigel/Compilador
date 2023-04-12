@@ -256,7 +256,7 @@ public class Lexico {
                 case 9: 
                 	if(c == '\'') {
                 		lexema.append(c);
-                		estado = 9;
+                		return new Token(lexema.toString(), Token.TIPO_CHAR);
                 	}
                 	else if(c == '@') {
                 		lexema.append(c);
@@ -267,10 +267,10 @@ public class Lexico {
                 		lexema.append(c);
                 		System.err.println("Erro: char mal formado " + lexema.toString());
                 	}
-                	else {
-                		this.back();
-                		return new Token(lexema.toString(), Token.TIPO_CHAR);
-                	}
+//                	else {
+//                		this.back();
+//                		
+//                	}
                 	break;
                 case 99:
                     return new Token(lexema.toString(), Token.TIPO_FIM_CODIGO); 
