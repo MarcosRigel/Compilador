@@ -56,6 +56,10 @@ public class Lexico {
     	return (c >= 'A') && (c <= 'Z');
     }
     
+    private boolean isSimbolo(char c) {
+    	return (c == '!') || (c == ' ') || (c == '?') || (c == '@') || (c == '#') || (c == '$') 
+    			 || (c == '+') || (c == '-') || (c == '/') || (c == '`') || (c == '*');
+    }
     //Identificar se char é dígito
     private boolean isDigito(char c){
         return (c >= '0') && (c <= '9');
@@ -280,7 +284,7 @@ public class Lexico {
                 	}
                 	break;
                 case 10:
-                	if(isLetra(c) || isDigito(c) || isLetraMaiuscula(c) || c == '!' || c == ' ' || c == '?' || c == '@' || c == '#' || c == '$' || c == '+' || c == '-' || c == '/' || c == '`' || c == '*') {
+                	if(isLetra(c) || isDigito(c) || isLetraMaiuscula(c) || isSimbolo(c) || c == ' ') {
                 		lexema.append(c);
                 	}
                 	else if(c == '\'') {
