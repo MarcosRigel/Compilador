@@ -11,7 +11,7 @@ package compiladorl3;
  */
 public class CompiladorL3 {
     public static void main(String[] args) {
-        Lexico lexico = new Lexico("C:\\Users\\Marcos Rigel\\OneDrive\\Área de Trabalho\\CompiladorL3\\src\\compiladorl3\\codigo.txt");
+        Lexico lexico = new Lexico("src\\compiladorl3\\codigo.txt");
         Sintatico2 sintatico = new Sintatico2(lexico);
         sintatico.S();
     }    
