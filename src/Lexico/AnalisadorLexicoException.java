@@ -1,30 +1,32 @@
 package Lexico;
 
 public class AnalisadorLexicoException extends Exception {
-	// ERRO CHAR
-	public void CharException(int linha, int coluna, String lexema) throws Exception {
-		throw new Exception("\n[ERRO LEXICO]"+"\nERRO na linha " + linha + ", coluna " + coluna + ", ultimo token lido: " + lexema
-				+ " :char mal formado!");
+	public void CharException(int linha, String lexema) throws Exception {
+		throw new Exception("\nErro lexico\n"
+				+"linha "
+				+ linha
+				+ "\n✖✖✖ char mal formado! ✖✖✖");
 	}
 
-	// ERRO FLOAT
-	public void FloatException(int linha, int coluna, String lexema) throws Exception {
-		throw new Exception("\n[ERRO LEXICO]"+"\nERRO na linha " + linha + ", coluna " + coluna + ", ultimo token lido: " + lexema
-				+ " :float mal formado!");
+	public void FloatException(int linha, String lexema) throws Exception {
+		throw new Exception("\nErro lexico\n" 
+				+"linha " 
+				+ linha 
+				+ "\n✖✖✖ float mal formado! ✖✖✖");
 	}
 
-	// ERRO DIFEREN�A
-	public void DeferencaException(int linha, int coluna, String lexema) throws Exception {
-		throw new Exception("\n[ERRO LEXICO]"+"\nERRO na linha " + linha + ", coluna " + coluna + ", ultimo token lido: " + lexema
-				+ " :diferenca mal formada!");
+	public void DeferencaException(int linha, String lexema) throws Exception {
+		throw new Exception("\nErro lexico\n"
+				+"linha " 
+				+ linha
+				+ "\n✖✖✖ Atribuição mal formada ✖✖✖");
 	}
 
-	// ERRO CARACTERE INVALIDO
-	public void NotValidException(int linha, int coluna, String lexema) throws Exception {
-		throw new Exception("\n[ERRO LEXICO]"+"\nERRO na linha " + linha + ", coluna " + coluna + ", ultimo token lido: " + lexema
-				+ " :caractere invalido!");
+	public void NotValidException(int linha, String lexema) throws Exception {
+		throw new Exception("\nErro lexico\n"
+				+"linha "
+				+ linha 
+				+ "\n✖✖✖ caractere invalido ✖✖✖");
 	}
 
 }
-
-

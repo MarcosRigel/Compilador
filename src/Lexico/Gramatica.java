@@ -1,6 +1,6 @@
 package Lexico;
 
-public enum Gramatica {
+public enum Gramatica{
 	// TIPOS DE ANALISADORES LEXICOS
 	EOF,
 	TIPOINT,

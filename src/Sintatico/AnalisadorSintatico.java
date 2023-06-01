@@ -15,7 +15,7 @@ public class AnalisadorSintatico {
 	private AnalisadorSintaticoException exception;
 	private AnalisadorSemanticoException analisadorSemanticoException;
 	private FileReader arquivo;
-	private Token lookAHead;
+	private Token token;
 	private Tabela tabela;
 	private Integer bloco = 0;
 
@@ -26,20 +26,20 @@ public class AnalisadorSintatico {
 		this.analisadorSemanticoException = new AnalisadorSemanticoException();
 		this.tabela = new Tabela();
 	}
-	private void nextToken() throws Exception { // ok
-		lookAHead = AnalisadorLexico.nextToken();
+	private void nextToken() throws Exception {
+		token = AnalisadorLexico.nextToken();
 	}
 
 	private boolean comandoAux() {
-		if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_DO) {
+		if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_DO) {
 			return true;
-		} else if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_WHILE) {
+		} else if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_WHILE) {
 			return true;
-		} else if (lookAHead.getGramatica() == Gramatica.IDENTIFICADOR) {
+		} else if (token.getGramatica() == Gramatica.IDENTIFICADOR) {
 			return true;
-		} else if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_IF) {
+		} else if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_IF) {
 			return true;
-		} else if (lookAHead.getGramatica() == Gramatica.CARACTER_ESPECIAL_ABRECHAVE) {
+		} else if (token.getGramatica() == Gramatica.CARACTER_ESPECIAL_ABRECHAVE) {
 			return true;
 		}
 		return false;
@@ -47,9 +47,9 @@ public class AnalisadorSintatico {
 
 	private boolean comandoAuxBasico() {
 
-		if (lookAHead.getGramatica() == Gramatica.IDENTIFICADOR) {
+		if (token.getGramatica() == Gramatica.IDENTIFICADOR) {
 			return true;
-		} else if (lookAHead.getGramatica() == Gramatica.CARACTER_ESPECIAL_ABRECHAVE) {
+		} else if (token.getGramatica() == Gramatica.CARACTER_ESPECIAL_ABRECHAVE) {
 			return true;
 		}
 		return false;
@@ -58,12 +58,12 @@ public class AnalisadorSintatico {
 	public void comandoBasico() throws Exception {
 		// <comando_basico> ::= <atribuicao> | <bloco>
 
-		if (lookAHead.getGramatica() == Gramatica.CARACTER_ESPECIAL_ABRECHAVE) {
+		if (token.getGramatica() == Gramatica.CARACTER_ESPECIAL_ABRECHAVE) {
 			bloco();
 
-		} else if (lookAHead.getGramatica() == Gramatica.IDENTIFICADOR) {
-			if (!tabela.contains(lookAHead)) {
-				analisadorSemanticoException.VariavelNaoDeclaradaException(lookAHead);
+		} else if (token.getGramatica() == Gramatica.IDENTIFICADOR) {
+			if (!tabela.contains(token)) {
+				analisadorSemanticoException.VariavelNaoDeclaradaException(token);
 			}
 			atribuicao();
 		}
@@ -79,11 +79,11 @@ public class AnalisadorSintatico {
 		} else if (iteracaoAux()) {
 			iteracao();
 
-		} else if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_IF) {
+		} else if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_IF) {
 			nextToken();
 
-			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_ABREPARENTESES) {
-				exception.AbreParentesesException(lookAHead);
+			if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_ABREPARENTESES) {
+				exception.AbreParentesesException(token);
 			}
 			nextToken();
 
@@ -91,15 +91,15 @@ public class AnalisadorSintatico {
 
 			String label = Label.NovoLabel();
 			
-			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
-				exception.FechaParentesesException(lookAHead);
+			if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
+				exception.FechaParentesesException(token);
 			}
 			nextToken();
 
 			String label2 = Label.NovoLabel();
 			comando();
 
-			if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_ELSE) {
+			if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_ELSE) {
 				nextToken();
 			comando();
 			}
@@ -110,11 +110,11 @@ public class AnalisadorSintatico {
 
 	private boolean declaracaoVariaveisAux() {
 
-		if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_INT) {
+		if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_INT) {
 			return true;
-		} else if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_FLOAT) {
+		} else if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_FLOAT) {
 			return true;
-		} else if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_CHAR) {
+		} else if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_CHAR) {
 			return true;
 		}
 		return false;
@@ -122,16 +122,16 @@ public class AnalisadorSintatico {
 
 	private void declaracaoVariaveis() throws Exception {
 
-		Token tipoDeclaracao = lookAHead;
+		Token tipoDeclaracao = token;
 
 		nextToken();
 
-		if (lookAHead.getGramatica() != Gramatica.IDENTIFICADOR) {
-			exception.IdentificadorException(lookAHead);
+		if (token.getGramatica() != Gramatica.IDENTIFICADOR) {
+			exception.IdentificadorException(token);
 		}
 
 		// Adiciona uma variavel a tabela de variaveis declaradas
-		Variavel variavel = new Variavel(lookAHead.getLexema(), tipoDeclaracao.getGramatica(), bloco, lookAHead);
+		Variavel variavel = new Variavel(token.getLexema(), tipoDeclaracao.getGramatica(), bloco, token);
 
 		if (tabela.exist(variavel)) {
 			this.analisadorSemanticoException.VariavelDeclaradaException(variavel.getToken());
@@ -141,31 +141,31 @@ public class AnalisadorSintatico {
 
 		nextToken();
 
-		if (lookAHead.getGramatica() == Gramatica.CARACTER_ESPECIAL_VIRGULA) {
-			while (lookAHead.getGramatica() == Gramatica.CARACTER_ESPECIAL_VIRGULA) {
+		if (token.getGramatica() == Gramatica.CARACTER_ESPECIAL_VIRGULA) {
+			while (token.getGramatica() == Gramatica.CARACTER_ESPECIAL_VIRGULA) {
 				nextToken();
 
-				if (lookAHead.getGramatica() != Gramatica.IDENTIFICADOR) {
-					exception.IdentificadorException(lookAHead);
+				if (token.getGramatica() != Gramatica.IDENTIFICADOR) {
+					exception.IdentificadorException(token);
 				}
 				// Adiciona uma variavel a tabela de variaveis declaradas
-				variavel = new Variavel(lookAHead.getLexema(), tipoDeclaracao.getGramatica(), bloco, lookAHead);
+				variavel = new Variavel(token.getLexema(), tipoDeclaracao.getGramatica(), bloco, token);
 				this.tabela.empilha(variavel);
 
 				nextToken();
 			}
 		}
-		if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_PONTOVIRGULA) {
-			exception.PontoVirgulaException(lookAHead);
+		if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_PONTOVIRGULA) {
+			exception.PontoVirgulaException(token);
 		}
 		nextToken();
 	}
 
 	private boolean iteracaoAux() {
-		if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_WHILE) {
+		if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_WHILE) {
 			return true;
 
-		} else if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_DO) {
+		} else if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_DO) {
 			return true;
 		}
 		return false;
@@ -175,11 +175,11 @@ public class AnalisadorSintatico {
 		// <itera��o> ::= while "("<expr_relacional>")" <comando> | do <comando> while
 		// "("<expr_relacional>")"";"
 
-		if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_WHILE) {
+		if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_WHILE) {
 			nextToken();
 
-			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_ABREPARENTESES) {
-				exception.AbreParentesesException(lookAHead);
+			if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_ABREPARENTESES) {
+				exception.AbreParentesesException(token);
 			}
 			nextToken();
 
@@ -189,13 +189,13 @@ public class AnalisadorSintatico {
 
 			String label2 = Label.NovoLabel();
 			
-			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
-				exception.FechaParentesesException(lookAHead);
+			if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
+				exception.FechaParentesesException(token);
 			}
 			nextToken();
 			comando();
 
-		} else if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_DO) {
+		} else if (token.getGramatica() == Gramatica.PALAVRA_RESERVADA_DO) {
 			nextToken();
 
 			String label = Label.NovoLabel();
@@ -203,26 +203,26 @@ public class AnalisadorSintatico {
 			
 			comando();
 
-			if (lookAHead.getGramatica() != Gramatica.PALAVRA_RESERVADA_WHILE) {
-				exception.WhileException(lookAHead);
+			if (token.getGramatica() != Gramatica.PALAVRA_RESERVADA_WHILE) {
+				exception.WhileException(token);
 			}
 			nextToken();
 
-			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_ABREPARENTESES) {
-				exception.AbreParentesesException(lookAHead);
+			if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_ABREPARENTESES) {
+				exception.AbreParentesesException(token);
 			}
 			nextToken();
 
 			Variavel expRelacional = expressaoRelacional();
 
 			String label2 = Label.NovoLabel();
-			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
-				exception.FechaParentesesException(lookAHead);
+			if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
+				exception.FechaParentesesException(token);
 			}
 			nextToken();
 
-			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_PONTOVIRGULA) {
-				exception.PontoVirgulaException(lookAHead);
+			if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_PONTOVIRGULA) {
+				exception.PontoVirgulaException(token);
 			}
 			nextToken();
 		}
@@ -231,34 +231,33 @@ public class AnalisadorSintatico {
 
 	public void parser() { 
 		// <programa> / int main() <bloco>
-
 		try {
 			nextToken();
 
-			if (lookAHead.getGramatica() != Gramatica.PALAVRA_RESERVADA_INT) {
-				exception.IntException(lookAHead);
+			if (token.getGramatica() != Gramatica.PALAVRA_RESERVADA_INT) {
+				exception.IntException(token);
 			}
 			nextToken();
 
-			if (lookAHead.getGramatica() != Gramatica.PALAVRA_RESERVADA_MAIN) {
-				exception.MainException(lookAHead);
+			if (token.getGramatica() != Gramatica.PALAVRA_RESERVADA_MAIN) {
+				exception.MainException(token);
 			}
 			nextToken();
 
-			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_ABREPARENTESES) {
-				exception.AbreParentesesException(lookAHead);
+			if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_ABREPARENTESES) {
+				exception.AbreParentesesException(token);
 			}
 			nextToken();
 
-			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
-				exception.FechaParentesesException(lookAHead);
+			if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
+				exception.FechaParentesesException(token);
 			}
 			nextToken();
 
 			bloco();
 
-			if (lookAHead.getGramatica() != Gramatica.EOF) {
-				exception.EoFException(lookAHead);
+			if (token.getGramatica() != Gramatica.EOF) {
+				exception.EoFException(token);
 			}
 			else {
 				System.out.println("Colera do Dragao !");
@@ -272,8 +271,8 @@ public class AnalisadorSintatico {
 
 	private void bloco() throws Exception { 
 		 //<bloco>  "{" {<decl_var>}* {<comando>}* "}" 
-		if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_ABRECHAVE) {
-			exception.AbreChaveException(lookAHead);
+		if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_ABRECHAVE) {
+			exception.AbreChaveException(token);
 		}
 		nextToken();
 		this.bloco += 1;
@@ -286,8 +285,8 @@ public class AnalisadorSintatico {
 			comando();
 		}
 
-		if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHACHAVE) {
-			exception.FechaChaveException(lookAHead);
+		if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHACHAVE) {
+			exception.FechaChaveException(token);
 		}
 		nextToken();
 
@@ -296,19 +295,15 @@ public class AnalisadorSintatico {
 	}
 
 	public void atribuicao() throws Exception {
-		// <atribui��o> ::= <id> "=" <expr_arit> ";"
-
-		if (lookAHead.getGramatica() == Gramatica.IDENTIFICADOR) {
-			if (!tabela.contains(lookAHead)) {
-				analisadorSemanticoException.VariavelNaoDeclaradaException(lookAHead);
+		if (token.getGramatica() == Gramatica.IDENTIFICADOR) {
+			if (!tabela.contains(token)) {
+				analisadorSemanticoException.VariavelNaoDeclaradaException(token);
 			}
-
-			// Busca na tabela a variavel
-			Variavel operando1 = tabela.get(lookAHead, bloco);
+			Variavel operando1 = tabela.get(token, bloco);
 			nextToken();
 
-			if (lookAHead.getGramatica() != Gramatica.OPERADOR_ARITMETICO_ATRIBUICAO) {
-				analisadorSemanticoException.AtribuicaoException(lookAHead);
+			if (token.getGramatica() != Gramatica.OPERADOR_ARITMETICO_ATRIBUICAO) {
+				analisadorSemanticoException.AtribuicaoException(token);
 			}
 			nextToken();
 
@@ -343,8 +338,8 @@ public class AnalisadorSintatico {
 				
 			}
 
-			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_PONTOVIRGULA) {
-				exception.PontoVirgulaException(lookAHead);
+			if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_PONTOVIRGULA) {
+				exception.PontoVirgulaException(token);
 			}
 			nextToken();
 		}
@@ -385,7 +380,7 @@ public class AnalisadorSintatico {
 
 	public Variavel expressaoAritmeticaAux() throws Exception {
 		Variavel operando1 = termoAux();
-		Token operador = lookAHead;
+		Token operador = token;
 		Variavel operando2 = expressaoAritmetica();
 		Variavel variavel = null;
 
@@ -465,10 +460,10 @@ public class AnalisadorSintatico {
 	public Variavel expressaoAritmetica() throws Exception {
 		Variavel variavel = null;
 
-		if (lookAHead.getGramatica() == Gramatica.OPERADOR_ARITMETICO_SOMA) {
+		if (token.getGramatica() == Gramatica.OPERADOR_ARITMETICO_SOMA) {
 			nextToken();
 			Variavel operando1 = termoAux();
-			Token operador = lookAHead;
+			Token operador = token;
 			Variavel operando2 = expressaoAritmetica();
 
 			if (operando2 != null) {
@@ -540,10 +535,10 @@ public class AnalisadorSintatico {
 			}
 			return operando1;
 
-		} else if (lookAHead.getGramatica() == Gramatica.OPERADOR_ARITMETICO_SUBTRACAO) {
+		} else if (token.getGramatica() == Gramatica.OPERADOR_ARITMETICO_SUBTRACAO) {
 			nextToken();
 			Variavel operando1 = termoAux();
-			Token operador = lookAHead;
+			Token operador = token;
 			Variavel operando2 = expressaoAritmetica();
 
 			if (operando2 != null) {
@@ -620,7 +615,7 @@ public class AnalisadorSintatico {
 
 	public Variavel termoAux() throws Exception {
 		Variavel operando1 = fator();
-		Token operador = lookAHead; 
+		Token operador = token; 
 		Variavel operando2 = termo();
 		Variavel variavel = null;
 
@@ -698,10 +693,10 @@ public class AnalisadorSintatico {
 	public Variavel termo() throws Exception {
 		Variavel variavel = null;
 
-		if (lookAHead.getGramatica() == Gramatica.OPERADOR_ARITMETICO_MULTIPLICACAO) {
+		if (token.getGramatica() == Gramatica.OPERADOR_ARITMETICO_MULTIPLICACAO) {
 			nextToken();
 			Variavel operando1 = termoAux();
-			Token operador = lookAHead; 
+			Token operador = token; 
 			Variavel operando2 = termo();
 
 			if (operando2 != null) {
@@ -774,10 +769,10 @@ public class AnalisadorSintatico {
 
 			return operando1;
 
-		} else if (lookAHead.getGramatica() == Gramatica.OPERADOR_ARITMETICO_DIVISAO) {
+		} else if (token.getGramatica() == Gramatica.OPERADOR_ARITMETICO_DIVISAO) {
 			nextToken();
 			Variavel operando1 = termoAux();
-			Token operador = lookAHead; 
+			Token operador = token; 
 			Variavel operando2 = termo();
 
 			if (operando2 != null) {
@@ -854,38 +849,38 @@ public class AnalisadorSintatico {
 
 	public Token operadorRelacional() throws Exception {
 
-		if (lookAHead.getGramatica() == Gramatica.OPERADOR_RELACIONAL_MAIOR) {
-			Token opRelacional = lookAHead;
+		if (token.getGramatica() == Gramatica.OPERADOR_RELACIONAL_MAIOR) {
+			Token opRelacional = token;
 			nextToken();
 			return opRelacional;
 
-		} else if (lookAHead.getGramatica() == Gramatica.OPERADOR_RELACIONAL_MAIORIGUAL) {
-			Token opRelacional = lookAHead;
+		} else if (token.getGramatica() == Gramatica.OPERADOR_RELACIONAL_MAIORIGUAL) {
+			Token opRelacional = token;
 			nextToken();
 			return opRelacional;
 
-		} else if (lookAHead.getGramatica() == Gramatica.OPERADOR_RELACIONAL_MENOR) {
-			Token opRelacional = lookAHead;
+		} else if (token.getGramatica() == Gramatica.OPERADOR_RELACIONAL_MENOR) {
+			Token opRelacional = token;
 			nextToken();
 			return opRelacional;
 
-		} else if (lookAHead.getGramatica() == Gramatica.OPERADOR_RELACIONAL_MENORIGUAL) {
-			Token opRelacional = lookAHead;
+		} else if (token.getGramatica() == Gramatica.OPERADOR_RELACIONAL_MENORIGUAL) {
+			Token opRelacional = token;
 			nextToken();
 			return opRelacional;
 
-		} else if (lookAHead.getGramatica() == Gramatica.OPERADOR_RELACIONAL_IGUAL) {
-			Token opRelacional = lookAHead;
+		} else if (token.getGramatica() == Gramatica.OPERADOR_RELACIONAL_IGUAL) {
+			Token opRelacional = token;
 			nextToken();
 			return opRelacional;
 
-		} else if (lookAHead.getGramatica() == Gramatica.OPERADOR_RELACIONAL_DIFERENCA) {
-			Token opRelacional = lookAHead;
+		} else if (token.getGramatica() == Gramatica.OPERADOR_RELACIONAL_DIFERENCA) {
+			Token opRelacional = token;
 			nextToken();
 			return opRelacional;
 
 		} else {
-			exception.OperadorRelacionalException(lookAHead);
+			exception.OperadorRelacionalException(token);
 		}
 		return null;
 	}
@@ -893,42 +888,42 @@ public class AnalisadorSintatico {
 	public Variavel fator() throws Exception {
 		//<fator> ::= "(" <expr_arit> ")" | <id> | <real> | <inteiro> | <char>
 
-		if (lookAHead.getGramatica() == Gramatica.CARACTER_ESPECIAL_ABREPARENTESES) {
+		if (token.getGramatica() == Gramatica.CARACTER_ESPECIAL_ABREPARENTESES) {
 			nextToken();
 			Variavel variavel = expressaoAritmeticaAux();
 
-			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
-				exception.FechaParentesesException(lookAHead);
+			if (token.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
+				exception.FechaParentesesException(token);
 			}
 			nextToken();
 			return variavel;
 
-		} else if (lookAHead.getGramatica() == Gramatica.IDENTIFICADOR) {
-			if (!tabela.contains(lookAHead)) {
-				analisadorSemanticoException.VariavelNaoDeclaradaException(lookAHead);
+		} else if (token.getGramatica() == Gramatica.IDENTIFICADOR) {
+			if (!tabela.contains(token)) {
+				analisadorSemanticoException.VariavelNaoDeclaradaException(token);
 			}
-			Variavel v = tabela.get(lookAHead, bloco);
-			Variavel variavel = new Variavel(lookAHead.getLexema(), v.getTipo(), v.getBlocoDeDeclaracao(), lookAHead);
+			Variavel v = tabela.get(token, bloco);
+			Variavel variavel = new Variavel(token.getLexema(), v.getTipo(), v.getBlocoDeDeclaracao(), token);
 			nextToken();
 			return variavel;
 
-		} else if (lookAHead.getGramatica() == Gramatica.TIPOFLOAT) {
-			Variavel variavel = new Variavel(lookAHead.getLexema(), Gramatica.TIPOFLOAT, this.bloco, lookAHead);
+		} else if (token.getGramatica() == Gramatica.TIPOFLOAT) {
+			Variavel variavel = new Variavel(token.getLexema(), Gramatica.TIPOFLOAT, this.bloco, token);
 			nextToken();
 			return variavel;
 
-		} else if (lookAHead.getGramatica() == Gramatica.TIPOINT) {
-			Variavel variavel = new Variavel(lookAHead.getLexema(), Gramatica.TIPOINT, this.bloco, lookAHead);
+		} else if (token.getGramatica() == Gramatica.TIPOINT) {
+			Variavel variavel = new Variavel(token.getLexema(), Gramatica.TIPOINT, this.bloco, token);
 			nextToken();
 			return variavel;
 
-		} else if (lookAHead.getGramatica() == Gramatica.TIPOCHAR) {
-			Variavel variavel = new Variavel(lookAHead.getLexema(), Gramatica.TIPOCHAR, this.bloco, lookAHead);
+		} else if (token.getGramatica() == Gramatica.TIPOCHAR) {
+			Variavel variavel = new Variavel(token.getLexema(), Gramatica.TIPOCHAR, this.bloco, token);
 			nextToken();
 			return variavel;
 
 		} else {
-			exception.FatorException(lookAHead);
+			exception.FatorException(token);
 		}
 		return null;
 	}

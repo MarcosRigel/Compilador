@@ -18,77 +18,70 @@ public class AnalisadorLexico {
 
 	public static Token nextToken() throws Exception {
 		
-			while (c != EoF) {// CONDIวรO PARA RODAR O ANALISADOR LEXICO
-				String lexema = "";// VAI ARMAZENAR O QUE FOR LIDO EM C
+			while (c != EoF) {
+				String lexema = "";
 
 				while (c == ' ' || c == '\n' || c == '\r' || c == '\t') {
-					getNextToken();// ANDA UM TOKEN
+					getNextToken();
 				}
 
 				if (c == EoF) {
 					return new Token(Gramatica.EOF, "EndOfFile", linha, coluna);
 
 				}
-				// PALAVRA RESERVADA/ IDENTIFICADOR
-				// VERIFICA SE ษ PALAVRA RESERVADA OU IDENTIFICADOR
-				else if (isLetter(c) || c == '_') {// SE FOR LETRA OU _
+				
+				else if (isLetter(c) || c == '_') {
 
-					while (isLetter(c) || isDigit(c) || c == '_') {// SE FOR LETRA OU NUMERO OU _
-						lexema += c;// GRAVA O CARACTERE LIDO EM LEXEMA
+					while (isLetter(c) || isDigit(c) || c == '_') {
+						lexema += c;
 						getNextToken();
 					}
 
-					palavraReservada = Token.isPalavraReservada(lexema);// SE FOR PALAVRA RESERVADA
-					return new Token(palavraReservada, lexema, linha, coluna);// CRIA UM NOVO TOKEN COM A PALAVRA
-																				// RESERVADA
+					palavraReservada = Token.isPalavraReservada(lexema);
+					return new Token(palavraReservada, lexema, linha, coluna);
 
 				}
-				// CHAR
-				// VERIFICA SE O CARACTERE LIDO ษ TIPO CHAR
+				
 				else if (c == '\'') {
 					lexema += c;
 					getNextToken();
 
-					// SE O CHAR TIVER MAL FORMADO
 					if (!(isLetter(c) || isDigit(c))) {
-						Exception.CharException(linha, coluna, lexema);
+						Exception.CharException(linha, lexema);
 					}
 
 					lexema += c;
 					getNextToken();
 
-					// SE O CHAR TIVER MAL FORMADO
 					if (c != '\'') {
-						Exception.CharException(linha, coluna, lexema);
+						Exception.CharException(linha, lexema);
 					}
 
 					lexema += c;
 					getNextToken();
-					return new Token(Gramatica.TIPOCHAR, lexema, linha, coluna);// CRIA NOVO TOKEN COM O TIPO CHAR
+					return new Token(Gramatica.TIPOCHAR, lexema, linha, coluna);
 
 				}
-				// FLOAT / INT
-				// VERIFICA SE O CARACTERE LIDO ษ TIPO INT OU FLOAT
-				if (isDigit(c)) { // CASO INT OU FLOAT
+				if (isDigit(c)) { 
 					while (isDigit(c)) {
 						lexema += c;
 						getNextToken();
 					}
-					if (c == '.') {// FLOAT
+					if (c == '.') {
 						lexema += c;
 						getNextToken();
 						if (isDigit(c)) {
-							while (isDigit(c)) {// 1..
+							while (isDigit(c)) {
 								lexema += c;
 								getNextToken();
 								if (c == '.') {
 									lexema += c;
-									Exception.FloatException(linha, coluna, lexema);
+									Exception.FloatException(linha, lexema);
 								}
 							}
 							return new Token(Gramatica.TIPOFLOAT, lexema, linha, coluna);
 						} else {
-							Exception.FloatException(linha, coluna, lexema);
+							Exception.FloatException(linha, lexema);
 						}
 
 					} else {
@@ -97,14 +90,10 @@ public class AnalisadorLexico {
 
 				}
 
-				// OPERADORES RELACIONAIS
-
-				// VERIFICA SE O CARACTERE LIDO ษ MENOR
 				else if (c == '<') {
 					lexema += c;
 					getNextToken();
 
-					// VERIFICA SE O PROXIMO CARACTERE LIDO ษ IGUAL
 					if (c == '=') {
 						lexema += c;
 						getNextToken();
@@ -116,11 +105,9 @@ public class AnalisadorLexico {
 
 				}
 
-				// VERIFICA SE O CARACTERE LIDO ษ MAIOR
 				else if (c == '>') {
 					lexema += c;
 					getNextToken();
-					// VERIFICA SE O PROXIMO CARACTERE LIDO ษ IGUAL
 					if (c == '=') {
 						lexema += c;
 						getNextToken();
@@ -130,19 +117,16 @@ public class AnalisadorLexico {
 					}
 
 				}
-				// VERIFICA SE O CARACTERE LIDO ษ EXCLAMACAO
 				else if (c == '!') {
 					lexema += c;
 					getNextToken();
 
-					// VERIFICA SE O CARACTERE LIDO ษ DIFERNETE DE IGUAL
 					if (c != '=') {
 						lexema += c;
 						getNextToken();
-						Exception.DeferencaException(linha, coluna, lexema);
+						Exception.DeferencaException(linha, lexema);
 
 					}
-					// VERIFICA SE O PROXIMO CARACTERE LIDO ษ IGUAL
 					else {
 						lexema += c;
 						getNextToken();
@@ -150,23 +134,19 @@ public class AnalisadorLexico {
 					}
 
 				}
-				// OPERADORES ARITMETICOS
-				// VERIFICA SE O CARACTERE LIDO ษ ADIวรO
+
 				else if (c == '+') {
 					lexema += c;
 					getNextToken();
 					return new Token(Gramatica.OPERADOR_ARITMETICO_SOMA, lexema, linha, coluna);
 
 				}
-				// VERIFICA SE O CARACTERE LIDO ษ SUBTRACAO
 				else if (c == '-') {
 					lexema += c;
 					getNextToken();
 
-					// CRIA NOVO TOKEN COM OPERADOR ARITIMETICO SUBTRACAO
 					return new Token(Gramatica.OPERADOR_ARITMETICO_SUBTRACAO, lexema, linha, coluna);
 				}
-				// VERIFICA SE O CARACTERE LIDO ษ MULTIPLICACAO
 
 				else if (c == '*') {
 					lexema += c;
@@ -175,21 +155,17 @@ public class AnalisadorLexico {
 					return new Token(Gramatica.OPERADOR_ARITMETICO_MULTIPLICACAO, lexema, linha, coluna);
 
 				}
-				// VERIFICA SE O CARACTERE LIDO ษ DIVISAO
 				else if (c == '/') {
 					lexema += c;
 					getNextToken();
 
-					// CRIA NOVO TOKEN COM OPERADOR ARITIMETICO DIV
 					return new Token(Gramatica.OPERADOR_ARITMETICO_DIVISAO, lexema, linha, coluna);
 
 				}
-				// VERIFICA SE O CARACTERE LIDO ษ IGUAL
 				else if (c == '=') {
 					lexema += c;
 					getNextToken();
 
-					// // VERIFICA SE O PROXIMO CARACTERE LIDO ษ OUTRO IGUAL
 					if (c == '=') {
 						lexema += c;
 						getNextToken();
@@ -199,8 +175,6 @@ public class AnalisadorLexico {
 					}
 				}
 
-				// CARACTERES ESPECIAIS
-				// VERIFICA SE O CARACTERE LIDO ษ ABRE PARENTESES
 				else if (c == '(') {
 					lexema += c;
 					getNextToken();
@@ -208,7 +182,6 @@ public class AnalisadorLexico {
 
 				}
 
-				// VERIFICA SE O CARACTERE LIDO ษ FECHA PARENTESES
 				else if (c == ')') {
 					lexema += c;
 					getNextToken();
@@ -216,7 +189,6 @@ public class AnalisadorLexico {
 
 				}
 
-				// VERIFICA SE O CARACTERE LIDO ษ ABRE CHAVE
 				else if (c == '{') {
 					lexema += c;
 					getNextToken();
@@ -224,7 +196,6 @@ public class AnalisadorLexico {
 
 				}
 
-				// VERIFICA SE O CARACTERE LIDO ษ FECHA CHAVE
 				else if (c == '}') {
 					lexema += c;
 					getNextToken();
@@ -232,7 +203,6 @@ public class AnalisadorLexico {
 
 				}
 
-				// VERIFICA SE O CARACTERE LIDO ษ PONTO E VIRGULA
 				else if (c == ';') {
 					lexema += c;
 					getNextToken();
@@ -240,7 +210,6 @@ public class AnalisadorLexico {
 
 				}
 
-				// VERIFICA SE O CARACTERE LIDO ษ VIRGULA
 				else if (c == ',') {
 					lexema += c;
 					getNextToken();
@@ -249,7 +218,7 @@ public class AnalisadorLexico {
 			
 				else {
 					lexema += c;
-					Exception.NotValidException(linha, coluna, lexema);
+					Exception.NotValidException(linha, lexema);
 				}
 
 			}
@@ -258,35 +227,26 @@ public class AnalisadorLexico {
 
 		}
 	
-	
-
-	// FUNCAO PARA IDENTIFICAR LETRAS MINUSCULAS
 	private static boolean isLetter(char c) {
 		return (c >= 'a' && c <= 'z');
 	}
 
-	// FUNCAO PARA IDENTIFICAR NUMEROS
 	private static boolean isDigit(char c) {
 		return (c >= '0' && c <= '9');
 	}
 
-	// PROCEDIMENTO PARA LER OS CARACTERES
 	private static void getNextToken() throws IOException {
 		c = (char) arquivo.read();
 
 		isCont();
 	}
 
-	// PROCEDIMENTO PARA TRATAR TAB E QUEBRA DE LINHA
-	// CONTA AS LINHAS E COLUNAS
 	private static void isCont() {
 
-		// CASO DE UM TAB CONTA 4 COLUNAS
 		if (c == '\t') {
 			coluna += 4;
 
 		}
-		// CASO DE UMA QUEBRA DE LINHA CONTA MAIS UMA LINHA E ZERO COLUNAS
 		else if (c == '\n') {
 			linha += 1;
 			coluna = 0;
