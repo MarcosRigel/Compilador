@@ -261,7 +261,7 @@ public class AnalisadorSintatico {
 				exception.EoFException(lookAHead);
 			}
 			else {
-				System.out.println("COMPILADO COM SUCESSO");
+				System.out.println("Colera do Dragao !");
 			}
 			
 		} catch (Exception e) {
