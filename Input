@@ -1,6 +1,6 @@
-int main () {
-int x;
+int main(){
+	int a;
+	float b;
+	b = 1;	
+	a = 1.1;
 }
-
-
-

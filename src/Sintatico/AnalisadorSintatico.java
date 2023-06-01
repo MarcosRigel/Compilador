@@ -90,22 +90,17 @@ public class AnalisadorSintatico {
 			Variavel expRelacional = expressaoRelacional();
 
 			String label = Label.NovoLabel();
-			System.out.println("if ( " + expRelacional.getLexema() + " ) GO TO -> " + label + ":");
-
+			
 			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
 				exception.FechaParentesesException(lookAHead);
 			}
 			nextToken();
 
 			String label2 = Label.NovoLabel();
-			System.out.println("SENÃO GO TO -> " + label2 + ":\n");
-
-			System.out.println(label + ":");
 			comando();
 
 			if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_ELSE) {
 				nextToken();
-				System.out.println(label2 + ":");
 			comando();
 			}
 			
@@ -177,7 +172,7 @@ public class AnalisadorSintatico {
 	}
 
 	public void iteracao() throws Exception {
-		// <iteração> ::= while "("<expr_relacional>")" <comando> | do <comando> while
+		// <iteraï¿½ï¿½o> ::= while "("<expr_relacional>")" <comando> | do <comando> while
 		// "("<expr_relacional>")"";"
 
 		if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_WHILE) {
@@ -189,18 +184,15 @@ public class AnalisadorSintatico {
 			nextToken();
 
 			String label = Label.NovoLabel();
-			System.out.println(label + ":");
-
+			
 			Variavel expRelacional = expressaoRelacional();
 
 			String label2 = Label.NovoLabel();
-			System.out.println("WHILE (" + expRelacional.getLexema() + ")  GO TO -> " + label2 + ":\n");
-
+			
 			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
 				exception.FechaParentesesException(lookAHead);
 			}
 			nextToken();
-			System.out.println(label2 + ":");
 			comando();
 
 		} else if (lookAHead.getGramatica() == Gramatica.PALAVRA_RESERVADA_DO) {
@@ -208,9 +200,7 @@ public class AnalisadorSintatico {
 
 			String label = Label.NovoLabel();
 
-			System.out.println("DO");
-			System.out.println(label + ":");
-
+			
 			comando();
 
 			if (lookAHead.getGramatica() != Gramatica.PALAVRA_RESERVADA_WHILE) {
@@ -226,10 +216,6 @@ public class AnalisadorSintatico {
 			Variavel expRelacional = expressaoRelacional();
 
 			String label2 = Label.NovoLabel();
-			System.out.println("WHILE (" + expRelacional.getLexema() + ") GO TO -> " + label2);
-			System.out.println("SENÃO -> " + label + ":\n");
-			System.out.println(label2 + ":\n");
-
 			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_FECHAPARENTESES) {
 				exception.FechaParentesesException(lookAHead);
 			}
@@ -310,7 +296,7 @@ public class AnalisadorSintatico {
 	}
 
 	public void atribuicao() throws Exception {
-		// <atribuição> ::= <id> "=" <expr_arit> ";"
+		// <atribuiï¿½ï¿½o> ::= <id> "=" <expr_arit> ";"
 
 		if (lookAHead.getGramatica() == Gramatica.IDENTIFICADOR) {
 			if (!tabela.contains(lookAHead)) {
@@ -335,7 +321,6 @@ public class AnalisadorSintatico {
 
 					analisadorSemanticoException.TipoInvalidoIntException(operando2.getToken());
 				}
-				System.out.println(operando1.getLexema() + " = " + operando2.getLexema() + "\n");
 			} else if (operando1.getTipo().equals(Gramatica.PALAVRA_RESERVADA_FLOAT)) {
 				if (operando2.getTipo().equals(Gramatica.TIPOINT)
 						|| operando2.getTipo().equals(Gramatica.PALAVRA_RESERVADA_INT)) {
@@ -343,14 +328,11 @@ public class AnalisadorSintatico {
 					Variavel variavel = new Variavel(operando2.getLexema(), operando2.getTipo(),
 							operando2.getBlocoDeDeclaracao(), operando2.getToken());
 					String temp = Label.NovaTemp();
-					System.out.print(temp + " = ");
 					cast(variavel);
 					variavel.setLexema(temp);
 
-					System.out.println(operando1.getLexema() + " = " + variavel.getLexema() + "\n");
+					
 				
-				} else {
-					System.out.println(operando1.getLexema() + " = " + operando2.getLexema() + "\n");
 				}
 			} else if (operando1.getTipo().equals(Gramatica.PALAVRA_RESERVADA_CHAR)) {
 				if (!operando2.getTipo().equals(Gramatica.PALAVRA_RESERVADA_CHAR)
@@ -358,7 +340,7 @@ public class AnalisadorSintatico {
 
 					analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 				}
-				System.out.println(operando1.getLexema() + " = " + operando2.getLexema() + "\n");
+				
 			}
 
 			if (lookAHead.getGramatica() != Gramatica.CARACTER_ESPECIAL_PONTOVIRGULA) {
@@ -397,7 +379,6 @@ public class AnalisadorSintatico {
 			}
 		}
 		String temp = Label.NovaTemp();
-		System.out.println(temp + " = " + operando1.getLexema() + opRelacional.getLexema() + operando2.getLexema());
 		operando1.setLexema(temp);
 		return operando1;
 	}
@@ -419,13 +400,11 @@ public class AnalisadorSintatico {
 					variavel = new Variavel(operando1.getLexema(), operando1.getTipo(),
 							operando1.getBlocoDeDeclaracao(), operando2.getToken());
 					String temp = Label.NovaTemp();
-					System.out.print(temp + " = ");
+					
 					cast(variavel);
 					variavel.setLexema(temp);
 
 					String temp2 = Label.NovaTemp();
-					System.out.println(
-							temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando2.getLexema());
 					variavel.setLexema(temp2);
 
 					return variavel;
@@ -437,9 +416,6 @@ public class AnalisadorSintatico {
 
 				} else {
 					String temp = Label.NovaTemp();
-					System.out.println(
-							temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
-
 					operando2.setLexema(temp);
 					return operando2;
 				}
@@ -452,13 +428,11 @@ public class AnalisadorSintatico {
 					variavel = new Variavel(operando2.getLexema(), operando2.getTipo(),
 							operando2.getBlocoDeDeclaracao(), operando2.getToken());
 					String temp = Label.NovaTemp();
-					System.out.print(temp + " = ");
+				
 					cast(variavel);
 					variavel.setLexema(temp);
 
 					String temp2 = Label.NovaTemp();
-					System.out.println(
-							temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando1.getLexema());
 					variavel.setLexema(temp2);
 
 					return variavel;
@@ -469,8 +443,6 @@ public class AnalisadorSintatico {
 					analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 				} else {
 					String temp = Label.NovaTemp();
-					System.out.println(
-							temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 					operando2.setLexema(temp);
 					return operando2;
 				}
@@ -484,7 +456,6 @@ public class AnalisadorSintatico {
 				}
 			}
 			String temp = Label.NovaTemp();
-			System.out.println(temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 			operando2.setLexema(temp);
 			return operando2;
 		}
@@ -511,13 +482,10 @@ public class AnalisadorSintatico {
 						variavel = new Variavel(operando1.getLexema(), operando1.getTipo(),
 								operando1.getBlocoDeDeclaracao(), operando2.getToken());
 						String temp = Label.NovaTemp();
-						System.out.print(temp + " = ");
 						cast(variavel);
 						variavel.setLexema(temp);
 
 						String temp2 = Label.NovaTemp();
-						System.out.println(
-								temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando2.getLexema());
 						variavel.setLexema(temp2);
 
 						return variavel;
@@ -528,8 +496,6 @@ public class AnalisadorSintatico {
 						analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 					} else {
 						String temp = Label.NovaTemp();
-						System.out.println(
-								temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 						operando2.setLexema(temp);
 						return operando2;
 					}
@@ -542,13 +508,10 @@ public class AnalisadorSintatico {
 						variavel = new Variavel(operando2.getLexema(), operando2.getTipo(),
 								operando2.getBlocoDeDeclaracao(), operando2.getToken());
 						String temp = Label.NovaTemp();
-						System.out.print(temp + " = ");
 						cast(variavel);
 						variavel.setLexema(temp);
 
 						String temp2 = Label.NovaTemp();
-						System.out.println(
-								temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando1.getLexema());
 						variavel.setLexema(temp2);
 
 						return variavel;
@@ -559,8 +522,6 @@ public class AnalisadorSintatico {
 						analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 					} else {
 						String temp = Label.NovaTemp();
-						System.out.println(
-								temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 						operando2.setLexema(temp);
 						return operando2;
 					}
@@ -574,7 +535,6 @@ public class AnalisadorSintatico {
 					}
 				}
 				String temp = Label.NovaTemp();
-				System.out.println(temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 				operando2.setLexema(temp);
 				return operando2;
 			}
@@ -597,13 +557,10 @@ public class AnalisadorSintatico {
 						variavel = new Variavel(operando1.getLexema(), operando1.getTipo(),
 								operando1.getBlocoDeDeclaracao(), operando2.getToken());
 						String temp = Label.NovaTemp();
-						System.out.print(temp + " = ");
 						cast(variavel);
 						variavel.setLexema(temp);
 
 						String temp2 = Label.NovaTemp();
-						System.out.println(
-								temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando2.getLexema());
 						variavel.setLexema(temp2);
 
 						return variavel;
@@ -614,8 +571,6 @@ public class AnalisadorSintatico {
 						analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 					} else {
 						String temp = Label.NovaTemp();
-						System.out.println(
-								temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 						operando2.setLexema(temp);
 						return operando2;
 					}
@@ -628,13 +583,10 @@ public class AnalisadorSintatico {
 						variavel = new Variavel(operando2.getLexema(), operando2.getTipo(),
 								operando2.getBlocoDeDeclaracao(), operando2.getToken());
 						String temp = Label.NovaTemp();
-						System.out.print(temp + " = ");
 						cast(variavel);
 						variavel.setLexema(temp);
 
 						String temp2 = Label.NovaTemp();
-						System.out.println(
-								temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando1.getLexema());
 						variavel.setLexema(temp2);
 
 						return variavel;
@@ -645,8 +597,6 @@ public class AnalisadorSintatico {
 						analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 					} else {
 						String temp = Label.NovaTemp();
-						System.out.println(
-								temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 						operando2.setLexema(temp);
 						return operando2;
 					}
@@ -660,7 +610,6 @@ public class AnalisadorSintatico {
 					}
 				}
 				String temp = Label.NovaTemp();
-				System.out.println(temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 				operando2.setLexema(temp);
 				return operando2;
 			}
@@ -686,13 +635,10 @@ public class AnalisadorSintatico {
 					variavel = new Variavel(operando1.getLexema(), operando1.getTipo(),
 							operando1.getBlocoDeDeclaracao(), operando2.getToken());
 					String temp = Label.NovaTemp();
-					System.out.print(temp + " = ");
 					cast(variavel);
 					variavel.setLexema(temp);
 
 					String temp2 = Label.NovaTemp();
-					System.out.println(
-							temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando2.getLexema());
 					variavel.setLexema(temp2);
 
 					return variavel;
@@ -703,8 +649,6 @@ public class AnalisadorSintatico {
 					analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 				} else {
 					String temp = Label.NovaTemp();
-					System.out.println(
-							temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 					operando2.setLexema(temp);
 					return operando2;
 				}
@@ -717,13 +661,10 @@ public class AnalisadorSintatico {
 					variavel = new Variavel(operando2.getLexema(), operando2.getTipo(),
 							operando2.getBlocoDeDeclaracao(), operando2.getToken());
 					String temp = Label.NovaTemp();
-					System.out.print(temp + " = ");
 					cast(variavel);
 					variavel.setLexema(temp);
 
 					String temp2 = Label.NovaTemp();
-					System.out.println(
-							temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando1.getLexema());
 					variavel.setLexema(temp2);
 
 					return variavel;
@@ -734,8 +675,6 @@ public class AnalisadorSintatico {
 					analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 				} else {
 					String temp = Label.NovaTemp();
-					System.out.println(
-							temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 					operando2.setLexema(temp);
 					return operando2;
 				}
@@ -749,7 +688,6 @@ public class AnalisadorSintatico {
 				}
 			}
 			String temp = Label.NovaTemp();
-			System.out.println(temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 			operando2.setLexema(temp);
 			return operando2;
 		}
@@ -777,13 +715,10 @@ public class AnalisadorSintatico {
 						variavel = new Variavel(operando1.getLexema(), operando1.getTipo(),
 								operando1.getBlocoDeDeclaracao(), operando2.getToken());
 						String temp = Label.NovaTemp();
-						System.out.print(temp + " = ");
 						cast(variavel);
 						variavel.setLexema(temp);
 
 						String temp2 = Label.NovaTemp();
-						System.out.println(
-								temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando2.getLexema());
 						variavel.setLexema(temp2);
 
 						return variavel;
@@ -794,8 +729,6 @@ public class AnalisadorSintatico {
 						analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 					} else {
 						String temp = Label.NovaTemp();
-						System.out.println(
-								temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 						operando2.setLexema(temp);
 						return operando2;
 					}
@@ -808,13 +741,10 @@ public class AnalisadorSintatico {
 						variavel = new Variavel(operando2.getLexema(), operando2.getTipo(),
 								operando2.getBlocoDeDeclaracao(), operando2.getToken());
 						String temp = Label.NovaTemp();
-						System.out.print(temp + " = ");
 						cast(variavel);
 						variavel.setLexema(temp);
 
 						String temp2 = Label.NovaTemp();
-						System.out.println(
-								temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando1.getLexema());
 						variavel.setLexema(temp2);
 
 						return variavel;
@@ -825,8 +755,6 @@ public class AnalisadorSintatico {
 						analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 					} else {
 						String temp = Label.NovaTemp();
-						System.out.println(
-								temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 						operando2.setLexema(temp);
 						return operando2;
 					}
@@ -840,7 +768,6 @@ public class AnalisadorSintatico {
 					}
 				}
 				String temp = Label.NovaTemp();
-				System.out.println(temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 				operando2.setLexema(temp);
 				return operando2;
 			}
@@ -864,13 +791,10 @@ public class AnalisadorSintatico {
 						variavel = new Variavel(operando1.getLexema(), operando1.getTipo(),
 								operando1.getBlocoDeDeclaracao(), operando2.getToken());
 						String temp = Label.NovaTemp();
-						System.out.print(temp + " = ");
 						cast(variavel);
 						variavel.setLexema(temp);
 
 						String temp2 = Label.NovaTemp();
-						System.out.println(
-								temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando2.getLexema());
 						variavel.setLexema(temp2);
 
 						return variavel;
@@ -881,8 +805,6 @@ public class AnalisadorSintatico {
 						analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 					} else {
 						String temp = Label.NovaTemp();
-						System.out.println(
-								temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 						operando2.setLexema(temp);
 						return operando2;
 					}
@@ -895,13 +817,10 @@ public class AnalisadorSintatico {
 						variavel = new Variavel(operando2.getLexema(), operando2.getTipo(),
 								operando2.getBlocoDeDeclaracao(), operando2.getToken());
 						String temp = Label.NovaTemp();
-						System.out.print(temp + " = ");
 						cast(variavel);
 						variavel.setLexema(temp);
 
 						String temp2 = Label.NovaTemp();
-						System.out.println(
-								temp2 + " = " + variavel.getLexema() + operador.getLexema() + operando1.getLexema());
 						variavel.setLexema(temp2);
 
 						return variavel;
@@ -912,8 +831,6 @@ public class AnalisadorSintatico {
 						analisadorSemanticoException.TipoInvalidoCharException(operando2.getToken());
 					} else {
 						String temp = Label.NovaTemp();
-						System.out.println(
-								temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 						operando2.setLexema(temp);
 						return operando2;
 					}
@@ -927,7 +844,6 @@ public class AnalisadorSintatico {
 					}
 				}
 				String temp = Label.NovaTemp();
-				System.out.println(temp + " = " + operando1.getLexema() + operador.getLexema() + operando2.getLexema());
 				operando2.setLexema(temp);
 				return operando2;
 			}
@@ -1017,7 +933,6 @@ public class AnalisadorSintatico {
 		return null;
 	}
 	public void cast(Variavel variavel) {
-		System.out.println("(Float) " + variavel.getLexema());
 		variavel.setTipo(Gramatica.TIPOFLOAT);
 	}
 }

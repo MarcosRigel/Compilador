@@ -35,7 +35,7 @@ public class AnalisadorSintaticoException {
 	}
 
 	public void FechaChaveException(Token lookAHead) throws Exception {
-		throw new Exception("\nErro Sintatico\n" + " ERRtO na linha "+ lookAHead.getLinha()
+		throw new Exception("\nErro Sintatico\n" + "ERRO na linha "+ lookAHead.getLinha()
 				+ "\n✖✖✖ Faltou declarar '}' ✖✖✖");
 	}
 
