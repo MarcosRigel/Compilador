@@ -5,37 +5,31 @@ import Lexico.Token;
 public class AnalisadorSemanticoException {
 
 	public void VariavelDeclaradaException(Token lookAHead) throws Exception {
-		throw new Exception("\n[ERRO SEMANTICO]\n" + "Oxe, tem algo errado ai : " + "ERRO na linha "
-				+ lookAHead.getLinha() + ", coluna " + lookAHead.getColuna() + ", \nlogo ali pertinho de: "
-				+ lookAHead.getLexema() + " : Existe uma variavel de mesmo nome declarada.");
+		throw new Exception("\nErro Semantico\n" + "ERRO na linha "
+				+ lookAHead.getLinha() + "\n✖✖✖ Existe uma variavel com o mesmo nome ✖✖✖");
 	}
 
 	public void VariavelNaoDeclaradaException(Token lookAHead) throws Exception {
-		throw new Exception("\n[ERRO SEMANTICO]\n" + "Oxe, tem algo errado ai : " + "ERRO na linha "
-				+ lookAHead.getLinha() + ", coluna " + lookAHead.getColuna() + ", \nlogo ali pertinho de: "
-				+ lookAHead.getLexema() + " : Declara essa variavel homi!");
+		throw new Exception("\nErro Semantico\n" + "ERRO na linha "
+				+ lookAHead.getLinha()+ "\n✖✖✖ Faltou declarar a variavel ✖✖✖");
 	}
 
 	public void TipoInvalidoIntException(Token lookAHead) throws Exception {
-		throw new Exception("\n[ERRO SEMANTICO]\n" + "Oxe, tem algo errado ai : " + "ERRO na linha "
-				+ lookAHead.getLinha() + ", coluna " + lookAHead.getColuna() + ", \nlogo ali pertinho de: "
-				+ lookAHead.getLexema() + " : Tipo nao compativel com INT");
+		throw new Exception("\nErro Semantico\n" + "ERRO na linha "
+				+ lookAHead.getLinha() + "\n✖✖✖ Tipo nao compativel com int ✖✖✖");
 		
 	}public void AtribuicaoException(Token lookAHead) throws Exception {
-		throw new Exception("\n[ERRO SEMANTICO]\n" + "Oxe esquecesse de nada n�o? " + "ERRO na linha "
-				+ lookAHead.getLinha() + ", coluna " + lookAHead.getColuna() + ",\nlogo ali pertinho de: "
-				+ lookAHead.getLexema() + " : Atribui isso direito!");
+		throw new Exception("\nErro Semantico\n" + "ERRO na linha "
+				+ lookAHead.getLinha() + "\n✖✖✖ Faltou a atribuicao ✖✖✖");
 	}
 
 	public void TipoInvalidoCharException(Token lookAHead) throws Exception {
-		throw new Exception("\n[ERRO SEMANTICO]\n" + "Oxe, tem algo errado ai : " + "ERRO na linha "
-				+ lookAHead.getLinha() + ", coluna " + lookAHead.getColuna() + ", \nlogo ali pertinho de: "
-				+ lookAHead.getLexema() + " : Tipo CHAR so e compativel com CHAR");
+		throw new Exception("\nErro Semantico\n" + "ERRO na linha "
+				+ lookAHead.getLinha() + "\n✖✖✖ Tipo CHAR so e compativel com CHAR ✖✖✖");
 	}
 
 	public void ExpressaoRelacionalException(Token lookAHead) throws Exception {
-		throw new Exception("\n[ERRO SEMANTICO]\n" + "Oxe, tem algo errado ai : " + "ERRO na linha "
-				+ lookAHead.getLinha() + ", coluna " + lookAHead.getColuna() + ", \nlogo ali pertinho de: "
-				+ lookAHead.getLexema() + " : Tipos nao compativeis na expressao relacional");
+		throw new Exception("\nErro Semantico\n" + "ERRO na linha "
+				+ lookAHead.getLinha() + "\n✖✖✖  Tipos nao compativeis na expressao relacional ✖✖✖");
 	}
 }
