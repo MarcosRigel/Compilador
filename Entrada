@@ -1,8 +1,5 @@
 int main(){
-	int a;
-	float b;
-	a = 0;	
-	if(a == 1){
-		b = 2;
-	}
-}
+    x;
+} 
+
+
